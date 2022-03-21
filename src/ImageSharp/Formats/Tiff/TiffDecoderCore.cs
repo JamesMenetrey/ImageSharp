@@ -179,18 +179,10 @@ namespace SixLabors.ImageSharp.Formats.Tiff
 
             ImageMetadata metadata = TiffDecoderMetadataCreator.Create(frames, this.ignoreMetadata, reader.ByteOrder, reader.IsBigTiff);
 
-            // TODO: Tiff frames can have different sizes.
+            // Pick the first TIFF frame
             ImageFrame<TPixel> root = frames[0];
-            this.Dimensions = root.Size();
-            foreach (ImageFrame<TPixel> frame in frames)
-            {
-                if (frame.Size() != root.Size())
-                {
-                    TiffThrowHelper.ThrowNotSupported("Images with different sizes are not supported");
-                }
-            }
 
-            return new Image<TPixel>(this.Configuration, metadata, frames);
+            return new Image<TPixel>(this.Configuration, metadata, new[] { root });
         }
 
         /// <inheritdoc/>
